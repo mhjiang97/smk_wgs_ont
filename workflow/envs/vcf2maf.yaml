@@ -1,0 +1,6 @@
+channels:
+  - bioconda
+dependencies:
+  - vcf2maf=1.6.22
+  - samtools=1.22
+  - htslib=1.22

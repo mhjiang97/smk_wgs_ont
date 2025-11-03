@@ -1,0 +1,14 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconductor-biocparallel
+  - bioconductor-genomicranges
+  - r-base>4.0
+  - r-dplyr
+  - r-glue
+  - r-purrr
+  - r-stringr
+  - r-tibble
+  - r-tidyr
+  - r-vroom

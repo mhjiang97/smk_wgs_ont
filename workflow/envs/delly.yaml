@@ -1,0 +1,4 @@
+channels:
+  - bioconda
+dependencies:
+  - delly=1.2.6

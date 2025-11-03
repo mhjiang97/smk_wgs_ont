@@ -1,0 +1,4 @@
+channels:
+  - bioconda
+dependencies:
+  - debreak=1.3

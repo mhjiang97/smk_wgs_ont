@@ -1,0 +1,33 @@
+include: "rules/common.smk"
+
+
+rule all:
+    input:
+        get_targets(),
+
+
+include: f"rules/mapper/{MAPPER}.smk"
+include: "rules/samtools/faidx.smk"
+include: "rules/caller/clair3.smk"
+
+
+for caller in CALLERS:
+
+    include: f"rules/caller/{caller}.smk"
+
+
+include: "rules/filtration/duphold.smk"
+include: "rules/filtration/hard_filter.smk"
+include: "rules/filtration/separate_types.smk"
+
+
+for annotator in ANNOTATORS:
+
+    include: f"rules/annotator/{annotator}.smk"
+
+
+include: "rules/filtration/survivor.smk"
+include: "rules/filtration/extract_annotations.smk"
+include: "rules/filtration/convert_annotations.smk"
+include: "rules/filtration/filter_annotations.smk"
+include: "rules/filtration/survivor_final.smk"

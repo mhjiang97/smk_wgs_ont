@@ -1,0 +1,11 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bedtools=2.31.1
+  - minimap2=2.28
+  - pip=24.0
+  - python=3.11.9
+  - samtools=1.20
+  - pip:
+      - nanovar==1.7.0

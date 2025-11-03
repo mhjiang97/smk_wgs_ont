@@ -1,0 +1,4 @@
+channels:
+  - bioconda
+dependencies:
+  - annotsv=3.5

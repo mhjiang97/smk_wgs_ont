@@ -1,0 +1,4 @@
+channels:
+  - bioconda
+dependencies:
+  - severus=1.6
