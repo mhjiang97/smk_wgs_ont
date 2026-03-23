@@ -65,6 +65,6 @@ cache_annotsv: /doc/tool/annotator/annotsv
 max_size_vep: 10000000
 config_nanosv: /doc/nanosv/config.ini
 bed_nanosv: /opt/nanosv/nanosv/bedfiles/hg19_genome_sample.bed
-model_clair3: /doc/clair3/models/r941_prom_sup_g5014
+model_clair3: r941_prom_sup_g5014
 bed_nvtr: /doc/sniffles/human_hs37d5.trf.chr.bed
 model_svision: /doc/svision/svision-cnn-model.ckpt

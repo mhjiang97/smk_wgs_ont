@@ -2,7 +2,7 @@ rule vep:
     conda:
         "../../envs/vep.yaml"
     input:
-        vcf="{caller}/{sample}/{caller}.{type_sv}.vcf",
+        vcf="{caller}/{sample}/{caller}.{type_sv}.corrected.vcf",
         fasta=config["fasta"],
         dir_cache=path_cache_vep,
     output:

@@ -2,7 +2,7 @@ rule snpeff:
     conda:
         "../../envs/snpeff.yaml"
     input:
-        vcf="{caller}/{sample}/{caller}.{type_sv}.vcf",
+        vcf="{caller}/{sample}/{caller}.{type_sv}.corrected.vcf",
         fasta=config["fasta"],
         dir_cache=path_cache_snpeff,
     output:
@@ -12,8 +12,6 @@ rule snpeff:
         cache=config["cache_snpeff"],
         version=config["version_snpeff"],
         genome=config["genome"],
-    resources:
-        mem_mb=1,
     log:
         "logs/{sample}/snpeff.{caller}.{type_sv}.log",
     shell:

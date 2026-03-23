@@ -5,7 +5,7 @@ rule annotsv:
         "../../envs/annotsv.yaml"
     input:
         **get_annotsv_cache_outputs(),
-        vcf="{caller}/{sample}/{caller}.{type_sv}.vcf",
+        vcf="{caller}/{sample}/{caller}.{type_sv}.corrected.vcf",
     output:
         tsv=touch(protected("{caller}/{sample}/{caller}.{type_sv}.annotsv.tsv")),
     params:

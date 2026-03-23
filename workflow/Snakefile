@@ -19,6 +19,7 @@ for caller in CALLERS:
 include: "rules/filtration/duphold.smk"
 include: "rules/filtration/hard_filter.smk"
 include: "rules/filtration/separate_types.smk"
+include: "rules/correction/octopusv.smk"
 
 
 for annotator in ANNOTATORS:

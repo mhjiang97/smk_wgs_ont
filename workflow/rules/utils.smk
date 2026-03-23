@@ -65,3 +65,51 @@ def get_format_svision_parameters(wildcards):
                 }
 
     raise ValueError(f"No non-empty VCF found for sample {sample}.")
+
+
+def get_format_svision_parameters2(wildcards):
+    sample = wildcards.sample
+
+    for index, chrom in enumerate(CHROMS):
+        vcf = checkpoints.svision.get(sample=sample).output[index]
+        if Path(vcf).exists() and Path(vcf).stat().st_size > 0:
+            return {
+                "chrom_lead": chrom,
+                "vcf_lead": vcf,
+            }
+
+    raise ValueError(f"No non-empty VCF found for sample {sample}.")
+
+
+def get_split_octopusv_calls_formula(wildcards):
+    type_sv = wildcards.type_sv
+
+    formula = f'INFO/SVTYPE == "{type_sv}"'
+
+    if type_sv == "BND":
+        formula = 'INFO/SVTYPE == "BND" | INFO/SVTYPE == "TRA"'
+
+    return formula
+
+
+def whether_to_concatenate(wildcards):
+    sample = wildcards.sample
+    type_sv = wildcards.type_sv
+    caller = wildcards.caller
+
+    path_vcf_new = checkpoints.split_octopusv_calls.get(
+        sample=sample, caller=caller, type_sv=type_sv
+    ).output.vcf
+    path_vcf_old = f"{caller}/{sample}/{caller}.{type_sv}.vcf"
+
+    l_n = sum(1 for line in open(path_vcf_new) if not line.startswith("#"))
+    l_o = sum(1 for line in open(path_vcf_old) if not line.startswith("#"))
+
+    if type_sv == "BND":
+        if l_n == l_o:
+            return False
+    else:
+        if l_n == 0:
+            return False
+
+    return True

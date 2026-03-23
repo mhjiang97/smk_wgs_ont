@@ -4,7 +4,7 @@ rule extract_annotations:
     input:
         vep="{caller}/{sample}/{caller}.{type_sv}.vep.vcf",
         snpeff="{caller}/{sample}/{caller}.{type_sv}.snpeff.vcf",
-        vcf="{caller}/{sample}/{caller}.{type_sv}.vcf",
+        vcf="{caller}/{sample}/{caller}.{type_sv}.corrected.vcf",
         survivor="survivor/{sample}/{sample}.{type_sv}.merged.vcf",
     output:
         tab="survivor/{sample}/{sample}.{caller}.{type_sv}.tab",

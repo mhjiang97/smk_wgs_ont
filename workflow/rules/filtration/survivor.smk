@@ -3,7 +3,7 @@ rule survivor:
         "../../envs/survivor.yaml"
     input:
         vcfs=expand(
-            "{caller}/{{sample}}/{caller}.{{type_sv}}.vcf",
+            "{caller}/{{sample}}/{caller}.{{type_sv}}.corrected.vcf",
             caller=CALLERS,
         ),
     output:

@@ -3,8 +3,9 @@ channels:
   - bioconda
 dependencies:
   - bioconductor-biocparallel
-  - bioconductor-genomicranges
-  - r-base>4.0
+  - bioconductor-genomicranges>=1.58.0
+  - bioconductor-genomeinfodb>=1.42.0
+  - r-base>4.1
   - r-dplyr
   - r-glue
   - r-purrr
