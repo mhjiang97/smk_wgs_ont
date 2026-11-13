@@ -3,6 +3,7 @@ rule clair3:
         "docker://hkubal/clair3:latest"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
+        csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
         fasta=config["fasta"],
         fai=f"{config['fasta']}.fai",
     output:

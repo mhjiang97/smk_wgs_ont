@@ -3,6 +3,7 @@ rule sniffles:
         "../../envs/sniffles.yaml"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
+        csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
         fasta=config["fasta"],
         bed=config["bed_tandem_repeats"],
     output:

@@ -4,6 +4,7 @@ rule duphold:
     input:
         vcf="{caller}/{sample}/{caller}.vcf",
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
+        csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
         fasta=config["fasta"],
     output:
         bcf=temp("{caller}/{sample}/{sample}.sorted.bcf"),

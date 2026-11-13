@@ -19,8 +19,8 @@ rule minimap2:
         fq=f"{config['dir_data']}/{{sample}}{config['suffix_fastq']}",
         index_minimap2=ancient(config["index_minimap2"]),
     output:
-        bam=protected("minimap2/{sample}/{sample}.sorted.bam"),
-        bai=protected("minimap2/{sample}/{sample}.sorted.bam.csi"),
+        bam=temp("minimap2/{sample}/{sample}.sorted.bam"),
+        bai=temp("minimap2/{sample}/{sample}.sorted.bam.csi"),
     params:
         read_group="@RG\\tID:{sample}\\tSM:{sample}\\tLB:DNA\\tPL:ONT",
     threads: 1

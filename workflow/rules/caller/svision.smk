@@ -3,6 +3,7 @@ checkpoint svision:
         "docker://jiadongxjtu/svision:latest"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
+        csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
         fasta=config["fasta"],
     output:
         touch(vcfs_svision),

@@ -3,6 +3,7 @@ rule nanosv:
         "../../envs/nanosv.yaml"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
+        csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
         bed=config["bed_nanosv"],
         config=config["config_nanosv"],
     output:

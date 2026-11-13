@@ -3,6 +3,7 @@ rule delly:
         "../../envs/delly.yaml"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
+        csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
         fasta=config["fasta"],
     output:
         bcf=temp("delly/{sample}/delly.bcf"),

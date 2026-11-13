@@ -3,6 +3,7 @@ rule svim:
         "../../envs/svim.yaml"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
+        csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
         fasta=config["fasta"],
     output:
         vcf=protected("svim/{sample}/variants.vcf"),
