@@ -157,6 +157,7 @@ cp config/pep/config-test.yaml config/pep/config.yaml
   - `mapper`: dict whose keys are names of mappers and values (boolean) indicate whether perform mapping or not. Only the first mapper will be used. When a mapper is specified and its value is `false`, no mapping by this mapper will be performed, but its results will be used in the following steps.
   - `callers`: dict whose keys are names of callers and values (boolean) indicate whether perform SV calling using this caller or not. When a caller is specified and its value is `false`, no SV calling by this caller will be performed, but its results will be used in the following steps.
   - `types_sv`: SV types to be called. BND indicates translocations.
+  - `chroms`: optional list of chromosomes to run SVision on (default: `chr1`-`chr22`, `chrX`, `chrY`). SVision runs as one job per chromosome (`rule svision`), followed by one gather job (`rule format_svision`) per sample. Threads for each per-chromosome job come from `set-threads: svision` in the profile.
   - ...
 
 #### Profile - `workflow/profiles/default/config.yaml`
