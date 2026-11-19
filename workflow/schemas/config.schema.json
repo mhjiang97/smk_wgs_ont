@@ -113,8 +113,7 @@
     "model_clair3": { "type": "string" },
     "bed_nvtr": { "type": "string" },
     "model_svision": { "type": "string" },
-    "threads_svision": { "type": "integer", "minimum": 1, "default": 1 },
-    "chroms_svision": {
+    "chroms": {
       "type": "array",
       "items": { "type": "string" },
       "minItems": 1,

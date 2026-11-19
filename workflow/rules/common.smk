@@ -32,7 +32,7 @@ SPECIES = config["species"]
 CALLERS = sorted(config["callers"])
 MAPPER = config["mapper"]
 ANNOTATORS = config["annotators"]
-CHROMS_SVISION = config.get("chroms_svision") or CHROMS
+CHROMS_SVISION = config.get("chroms") or CHROMS
 
 
 # *--------------------------------------------------------------------------* #

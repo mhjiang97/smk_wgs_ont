@@ -14,7 +14,7 @@ rule svision:
         chrom=r"|".join(re.escape(chrom) for chrom in CHROMS_SVISION),
     container:
         "docker://jiadongxjtu/svision:latest"
-    threads: config["threads_svision"]
+    threads: 1
     params:
         dir="svision/{sample}/chroms/{chrom}",
         model=config["model_svision"],
