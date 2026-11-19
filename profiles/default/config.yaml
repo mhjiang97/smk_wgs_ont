@@ -25,7 +25,6 @@ set-threads:
   severus: 10
   snpeff: 10
   sniffles: 10
-  svision: 10
   minimap2: 10
   minimap2_index: 10
   vep: 10

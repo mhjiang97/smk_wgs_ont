@@ -23,7 +23,6 @@ set-threads:
   nanovar: 10
   severus: 10
   sniffles: 10
-  svision: 10
   minimap2: 10
   minimap2_index: 10
 set-resources:

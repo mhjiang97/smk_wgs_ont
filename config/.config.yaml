@@ -68,3 +68,8 @@ bed_nanosv: /opt/nanosv/nanosv/bedfiles/hg19_genome_sample.bed
 model_clair3: r941_prom_sup_g5014
 bed_nvtr: /doc/sniffles/human_hs37d5.trf.chr.bed
 model_svision: /doc/svision/svision-cnn-model.ckpt
+# SVision runs one job per chromosome; threads for each of those jobs.
+threads_svision: 1
+# Chromosomes for SVision (default: chr1-chr22, chrX, chrY).
+# chroms_svision:
+#   - chr21

@@ -1,6 +1,8 @@
 # *--------------------------------------------------------------------------* #
 # * Configuration                                                            * #
 # *--------------------------------------------------------------------------* #
+import re
+
 from snakemake.utils import validate
 
 
@@ -30,6 +32,7 @@ SPECIES = config["species"]
 CALLERS = sorted(config["callers"])
 MAPPER = config["mapper"]
 ANNOTATORS = config["annotators"]
+CHROMS_SVISION = config.get("chroms_svision") or CHROMS
 
 
 # *--------------------------------------------------------------------------* #
@@ -48,8 +51,3 @@ path_cache_snpeff = (
     f"{config['cache_snpeff']}/{config['genome']}.{config['version_snpeff']}"
 )
 path_cache_vep = f"{config['cache_vep']}/{config['species']}/{config['version_vep']}_{config['genome']}"
-
-vcfs_svision = multiext(
-    "svision/{sample}/chroms/{sample}",
-    *[f".{chrom}.svision.s{config['min_reads']}.graph.vcf" for chrom in CHROMS],
-)
