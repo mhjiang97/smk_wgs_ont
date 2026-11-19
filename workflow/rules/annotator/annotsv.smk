@@ -1,21 +1,23 @@
 rule annotsv:
-    shadow:
-        "minimal"
-    conda:
-        "../../envs/annotsv.yaml"
     input:
         **get_annotsv_cache_outputs(),
         vcf="{caller}/{sample}/{caller}.{type_sv}.corrected.vcf",
     output:
         tsv=touch(protected("{caller}/{sample}/{caller}.{type_sv}.annotsv.tsv")),
+    log:
+        "logs/{sample}/annotsv.{caller}.{type_sv}.log",
+    shadow:
+        "minimal"
+    conda:
+        "../../envs/annotsv.yaml"
     params:
         genome=config["genome"],
         dir_cache=config["cache_annotsv"],
-    log:
-        "logs/{sample}/annotsv.{caller}.{type_sv}.log",
     shell:
         """
-        {{ g={params.genome}
+        exec 1>{log} 2>&1
+
+        g={params.genome}
         if [[ "${{g}}" == "hg19" ]]; then
             g="GRCh37"
         elif [[ "${{g}}" == "hg38" ]]; then
@@ -29,7 +31,7 @@ rule annotsv:
         if {{ [ {wildcards.caller} == "cutesv" ] && [ {wildcards.type_sv} == "DEL" ]; }} \\
             || {{ [ {wildcards.caller} == "debreak" ] && [ {wildcards.type_sv} == "DEL" ]; }} \\
             && [ ${{size_input}} -ge ${{max_size_mb}} ]; then
-            awk 'BEGIN {{OFS=FS="\\t"}} !/^#/ {{$4 = "N"; $5 = "<DEL>"}} 1' ${{input}} > ${{input%.*}}.4_5.vcf
+            awk 'BEGIN {{OFS=FS="\\t"}} !/^#/ {{$4 = "N"; $5 = "<DEL>"}} 1' ${{input}} >${{input%.*}}.4_5.vcf
             input=${{input%.*}}.4_5.vcf
         fi
 
@@ -39,6 +41,5 @@ rule annotsv:
             -SVinputFile ${{input}} \\
             -outputFile {output.tsv} \\
             -SVminSize 1 \\
-            -overwrite 1; }} \\
-        1> {log} 2>&1
+            -overwrite 1
         """

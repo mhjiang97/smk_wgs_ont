@@ -1,6 +1,4 @@
 rule clair3:
-    container:
-        "docker://hkubal/clair3:latest"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
         csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
@@ -12,12 +10,14 @@ rule clair3:
         bai=protected("clair3/{sample}/phased_output.bam.bai"),
         bam_renamed="clair3/{sample}/{sample}.sorted.haplotagged.bam",
         bai_renamed="clair3/{sample}/{sample}.sorted.haplotagged.bam.bai",
+    log:
+        "logs/{sample}/clair3.log",
+    container:
+        "docker://hkubal/clair3:latest"
+    threads: 1
     params:
         model=config["model_clair3"],
         dir=directory("clair3/{sample}"),
-    threads: 1
-    log:
-        "logs/{sample}/clair3.log",
     shell:
         """
         {{ run_clair3.sh \\

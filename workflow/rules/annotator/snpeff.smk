@@ -16,18 +16,20 @@ rule snpeff:
         "logs/{sample}/snpeff.{caller}.{type_sv}.log",
     shell:
         """
-        {{ max_size_mb=300
+        exec 1>{log} 2>&1
+
+        max_size_mb=300
         size_input=$(du -sm {input.vcf} | cut -f1)
 
         input={input.vcf}
         if [ {wildcards.caller} == "svision" ] && [ {wildcards.type_sv} == "INS" ]; then
-            awk 'BEGIN {{OFS=FS="\\t"}} !/^#/ && $5 == "<INS>" {{$5 = "N"}} 1' ${{input}} > ${{input%.*}}.5.vcf
+            awk 'BEGIN {{OFS=FS="\\t"}} !/^#/ && $5 == "<INS>" {{$5 = "N"}} 1' ${{input}} >${{input%.*}}.5.vcf
             input=${{input%.*}}.5.vcf
         elif [ {wildcards.caller} == "svision" ] && [ {wildcards.type_sv} != "INS" ]; then
-            awk -v var={wildcards.type_sv} 'BEGIN {{OFS=FS="\\t"}} !/^#/ {{$5 = "<"var">"}} 1' ${{input}} > ${{input%.*}}.5.vcf
+            awk -v var={wildcards.type_sv} 'BEGIN {{OFS=FS="\\t"}} !/^#/ {{$5 = "<"var">"}} 1' ${{input}} >${{input%.*}}.5.vcf
             input=${{input%.*}}.5.vcf
         elif [ {wildcards.caller} == "debreak" ] && [ {wildcards.type_sv} == "DEL" ] && [ ${{size_input}} -ge ${{max_size_mb}} ]; then
-            awk 'BEGIN {{OFS=FS="\\t"}} !/^#/ {{$4 = "N"; $5 = "<DEL>"}} 1' ${{input}} > ${{input%.*}}.4_5.vcf
+            awk 'BEGIN {{OFS=FS="\\t"}} !/^#/ {{$4 = "N"; $5 = "<DEL>"}} 1' ${{input}} >${{input%.*}}.4_5.vcf
             input=${{input%.*}}.4_5.vcf
         fi
 
@@ -35,6 +37,5 @@ rule snpeff:
             -nodownload -v -lof -canon \\
             -dataDir {params.cache} -s {output.html} \\
             {params.genome}.{params.version} ${{input}} \\
-            1> {output.vcf}; }} \\
-        1> {log} 2>&1
+            >{output.vcf}
         """

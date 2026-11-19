@@ -1,6 +1,4 @@
 rule duphold:
-    conda:
-        "../../envs/bcftools.yaml"
     input:
         vcf="{caller}/{sample}/{caller}.vcf",
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
@@ -9,12 +7,17 @@ rule duphold:
     output:
         bcf=temp("{caller}/{sample}/{sample}.sorted.bcf"),
         vcf="{caller}/{sample}/{caller}.duphold.vcf",
-    threads: 1
     log:
         "logs/{sample}/duphold.{caller}.log",
+    conda:
+        "../../envs/bcftools.yaml"
+    threads: 1
     shell:
         """
-        {{ bcftools sort -Ou {input.vcf} > {output.bcf}
+        exec 1> {log} 2>&1
+
+        bcftools view -e 'CHROM~"^GL" || ALT~"[][]GL" || POS=0 || ALT~":0[][]"' {input.vcf} \\
+            | bcftools sort -Ou - >{output.bcf}
 
         export DUPHOLD_SAMPLE_NAME={wildcards.sample}
         duphold \\
@@ -22,6 +25,5 @@ rule duphold:
             -v {output.bcf} \\
             -b {input.bam} \\
             -f {input.fasta} \\
-            -o {output.vcf}; }} \\
-        1> {log} 2>&1
+            -o {output.vcf}
         """

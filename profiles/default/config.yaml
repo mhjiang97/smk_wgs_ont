@@ -1,0 +1,36 @@
+software-deployment-method:
+  - apptainer
+  - conda
+apptainer-args: "--bind /storage5,/storage2,$HOME"
+conda-prefix: $HOME/.snakemake/envs
+apptainer-prefix: $HOME/.snakemake/singularity
+rerun-trigger: mtime
+printshellcmds: True
+keep-incomplete: True
+cores: all
+resources:
+  mem_mb: 200000  # 200GB
+default-resources:
+  mem_mb: 5000  # 5GB
+set-threads:
+  annotate_sv_snpeffnvep: 10
+  annotsv: 10
+  filter_sv_annotation: 10
+  filter_sv: 10
+  clair3: 10
+  cutesv: 10
+  debreak: 10
+  nanosv: 10
+  nanovar: 10
+  severus: 10
+  snpeff: 10
+  sniffles: 10
+  svision: 10
+  minimap2: 10
+  minimap2_index: 10
+  vep: 10
+set-resources:
+  snpeff:
+    mem_mb: 50000  # 50GB
+  svision:
+    runtime: 72h

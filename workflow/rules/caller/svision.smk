@@ -1,6 +1,4 @@
 checkpoint svision:
-    container:
-        "docker://jiadongxjtu/svision:latest"
     input:
         bam=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam",
         csi=f"{MAPPER}/{{sample}}/{{sample}}.sorted.bam.csi",
@@ -12,6 +10,11 @@ checkpoint svision:
         predict_results=temp(
             touch(directory("svision/{sample}/chroms/predict_results"))
         ),
+    log:
+        "logs/{sample}/svision.log",
+    container:
+        "docker://jiadongxjtu/svision:latest"
+    threads: 1
     params:
         dir="svision/{sample}/chroms",
         chroms=CHROMS,
@@ -20,17 +23,16 @@ checkpoint svision:
         min_quality_mapping=config["min_quality_mapping"],
         min_size=config["min_size"],
         max_size=config["max_size"],
-    threads: 1
-    log:
-        "logs/{sample}/svision.log",
     shell:
         """
         {{ for chrom in {params.chroms}; do
             lock_file="{params.dir}/${{chrom}}.lock"
-            if [ -f ${{lock_file}} ]; then
+            vcf_file="{params.dir}/{wildcards.sample}.${{chrom}}.svision.s{params.min_reads}.graph.vcf"
+            if [ -f "${{lock_file}}" ] && [ -f "${{vcf_file}}" ]; then
                 echo -e "[INFO] SVision already run for chromosome ${{chrom}}, skipping..."
                 continue
             fi
+            rm -f "${{lock_file}}"
 
             echo -e "[INFO] Running SVision on chromosome ${{chrom}}..."
 
@@ -59,17 +61,17 @@ checkpoint svision:
 
 
 rule format_svision:
-    conda:
-        "../../envs/bcftools.yaml"
     input:
         vcfs_svision,
     output:
         tab=temp("svision/{sample}/rename.tab"),
         vcf=protected("svision/{sample}/svision.vcf"),
-    params:
-        get_format_svision_parameters,
     log:
         "logs/{sample}/format_svision.log",
+    conda:
+        "../../envs/bcftools.yaml"
+    params:
+        get_format_svision_parameters,
     shell:
         """
         {{ echo -e "{wildcards.sample}.{params[0][chrom_lead]}\\t{wildcards.sample}" > {output.tab}

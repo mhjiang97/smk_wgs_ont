@@ -16,8 +16,8 @@ def get_targets():
 def get_annotsv_cache_outputs():
     if SPECIES in ["homo_sapiens"]:
         return {
-            "dir_1": f"{config['cache_annotsv']}/Annotations_Human",
-            "dir_2": f"{config['cache_annotsv']}/Annotations_Exomiser",
+            "dir1": f"{config['cache_annotsv']}/Annotations_Human",
+            "dir2": f"{config['cache_annotsv']}/Annotations_Exomiser",
         }
     else:
         raise ValueError("Unsupported species")

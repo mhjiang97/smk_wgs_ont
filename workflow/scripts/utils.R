@@ -60,6 +60,27 @@ calculate_overlap_flag <- function(coord, sv) {
   any(pcts_gr >= 0.9 & pcts_sv >= 0.8)
 }
 
+# AnnotSV leaves SV_length empty for some insertions. The inserted sequence
+# length is then nchar(ALT) - nchar(REF), since ALT keeps the anchor base.
+insertion_end <- function(tsv) {
+  svlen <- suppressWarnings(as.numeric(tsv$SV_length))
+  ref <- as.character(tsv$REF)
+  alt <- sub(",.*", "", as.character(tsv$ALT))
+  alt[!is.na(alt) & startsWith(alt, "<")] <- NA_character_
+  alt_len <- nchar(alt) - nchar(ref)
+  alt_len[!is.finite(alt_len) | alt_len < 1] <- NA_real_
+  len <- ifelse(is.finite(svlen) & svlen >= 1, svlen, alt_len)
+
+  start <- as.numeric(tsv$SV_start)
+  end <- start + len - 1
+  sv_end <- suppressWarnings(as.numeric(tsv$SV_end))
+  use_end <- !is.finite(end) & is.finite(sv_end) & is.finite(start) & sv_end >= start
+  end[use_end] <- sv_end[use_end]
+  use_start <- !is.finite(end) & is.finite(start)
+  end[use_start] <- start[use_start]
+  end
+}
+
 add_overlap_flag_annotsv <- function(tsv, sv_type, workers = detectCores()) {
   columns <- c("B_gain_coord", "B_loss_coord", "po_B_loss_allG_coord", "B_ins_coord", "po_B_gain_allG_coord", "B_inv_coord")
   # pct_columns <- c("pct_gain", "pct_loss", "pct_po_loss", "pct_ins", "pct_po_gain", "pct_inv")
@@ -75,10 +96,7 @@ add_overlap_flag_annotsv <- function(tsv, sv_type, workers = detectCores()) {
   if (sv_type == "INS") {
     gr_sv <- GRanges(
       seqnames = as.character(tsv$SV_chrom),
-      ranges = IRanges(
-        as.numeric(tsv$SV_start),
-        as.numeric(tsv$SV_start) + as.numeric(tsv$SV_length) - 1
-      )
+      ranges = IRanges(as.numeric(tsv$SV_start), insertion_end(tsv))
     )
   } else {
     gr_sv <- GRanges(
@@ -102,6 +120,54 @@ add_overlap_flag_annotsv <- function(tsv, sv_type, workers = detectCores()) {
       unlist()
   }
 
+  tsv
+}
+
+add_overlap_flag_annotsv2 <- function(tsv, sv_type, workers = NULL) {
+  columns <- c(
+    "B_gain_coord", "B_loss_coord", "po_B_loss_allG_coord",
+    "B_ins_coord", "po_B_gain_allG_coord", "B_inv_coord"
+  )
+  flag_columns <- c(
+    "flag_gain", "flag_loss", "flag_po_loss",
+    "flag_ins", "flag_po_gain", "flag_inv"
+  )
+
+  n <- nrow(tsv)
+  for (fc in flag_columns) tsv[[fc]] <- rep(FALSE, n)
+  if (n == 0) return(tsv)
+
+  if (sv_type == "INS") {
+    gr_sv <- GRanges(
+      as.character(tsv$SV_chrom),
+      IRanges(as.numeric(tsv$SV_start), insertion_end(tsv))
+    )
+  } else {
+    gr_sv <- GRanges(
+      as.character(tsv$SV_chrom),
+      IRanges(as.numeric(tsv$SV_start), as.numeric(tsv$SV_end))
+    )
+  }
+
+  for (j in seq_along(columns)) {
+    coord <- tsv[[columns[j]]]
+    rows  <- which(!is.na(coord) & nzchar(coord))
+    if (!length(rows)) next
+    parts  <- str_split(str_replace_all(coord[rows], "chr", ""), ";")
+    flat   <- unlist(parts, use.names = FALSE)
+    row_id <- rep(rows, lengths(parts))
+    keep   <- !is.na(flat) & nzchar(flat)
+    flat   <- flat[keep]
+    row_id <- row_id[keep]
+    if (!length(flat)) next
+
+    gr_sub <- as(flat, "GRanges")
+    sv_rep <- gr_sv[row_id]
+    inter  <- pintersect(gr_sub, sv_rep)
+    ok     <- (width(inter) / width(gr_sub) >= 0.9) &
+      (width(inter) / width(sv_rep) >= 0.8)
+    tsv[[flag_columns[j]]][unique(row_id[ok])] <- TRUE
+  }
   tsv
 }
 

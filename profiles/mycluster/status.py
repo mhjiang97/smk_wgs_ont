@@ -36,5 +36,5 @@ try:
     else:
         print("running")
 
-except (subprocess.CalledProcessError, IndexError, KeyboardInterrupt) as e:
+except (subprocess.CalledProcessError, IndexError, KeyboardInterrupt):
     print("failed")

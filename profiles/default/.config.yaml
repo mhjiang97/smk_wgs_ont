@@ -1,9 +1,9 @@
 software-deployment-method:
   - apptainer
   - conda
-apptainer-args: "--bind /storage,/home/user"
-conda-prefix: /.snakemake/envs
-apptainer-prefix: /.snakemake/singularity
+apptainer-args: "--bind /storage,$HOME"
+conda-prefix: $HOME/.snakemake/envs
+apptainer-prefix: $HOME/.snakemake/singularity
 scheduler: greedy
 printshellcmds: True
 keep-incomplete: True
